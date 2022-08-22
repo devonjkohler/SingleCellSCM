@@ -21,7 +21,7 @@ class BuildNetwork:
 
         if reach_server in ["local", "remote_server"]:
             ## Collect known statements
-            gn = GeneNetwork(list(gene_list))  # , basename="cache"
+            gn = GeneNetwork(list(self.gene_list))  # , basename="cache"
 
             biopax_stmts = gn.get_biopax_stmts()  ## PathwayCommons DB
             bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
@@ -67,7 +67,7 @@ class BuildNetwork:
 
         if self.network_statements is not None:
 
-            raw_pybel_graph = PybelAssembler(stmts)
+            raw_pybel_graph = PybelAssembler(self.network_statements)
             pybel_model = raw_pybel_graph.make_model()
 
             self.pybel_model = pybel_model

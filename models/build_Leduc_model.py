@@ -1,5 +1,5 @@
 
-from single_cell_scm.single_cell_scm.build_network import BuildNetwork
+from single_cell_scm.build_network import BuildNetwork
 import pickle
 import os
 import pandas as pd

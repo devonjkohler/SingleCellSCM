@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SingleCellSCM.iml" filepath="$PROJECT_DIR$/.idea/SingleCellSCM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/single_cell_scm.iml" filepath="$PROJECT_DIR$/.idea/single_cell_scm.iml" />
     </modules>
   </component>
 </project>

@@ -33,7 +33,7 @@ setup(
     author_email="kohler.d@northeastern.edu",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    package_dir={"": "singe_cell_scm"},  # Optional
+    # package_dir={"": "/"},  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -55,7 +55,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/discussions/install-requires-vs-requirements/
-    install_requires=["indra", "pickle", "pandas"],  # Optional
+    install_requires=["indra", "pandas"],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:

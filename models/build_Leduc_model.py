@@ -1,5 +1,5 @@
 
-from single_cell_scm.build_network import BuildNetwork
+from single_cell_scm.single_cell_scm.build_network import BuildNetwork
 import pickle
 import os
 import pandas as pd
@@ -12,14 +12,15 @@ def main():
     # protein_data.rename(columns={'Unnamed: 0': 'Protein'}, inplace=True)
     # proteins = protein_data["Protein"].unique()
 
-    protein_gene_mapping = pd.read_csv("../data/protein_gene_mapping.tsv", sep="\t",
-                                       header=0, names=["Protein", "Gene"])
+    protein_gene_mapping = pd.read_csv(
+        "/home/kohler.d/applications_project/single_cell_scm/data/protein_gene_mapping.tsv",
+        sep="\t", header=0, names=["Protein", "Gene"])
 
     model = BuildNetwork(protein_gene_mapping.loc[:5, "Gene"].values)
     model.assemble_genes(reach_server="remote_server")
     model.assemble_pybel()
 
-    with open("../data/Leduc_model.pkl", 'wb') as handle:
+    with open("/scratch/kohler.d/code_output/Leduc_model.pkl", 'wb') as handle:
         pickle.dump(model, handle, pickle.HIGHEST_PROTOCOL)
 
 if __name__ == "__main__":

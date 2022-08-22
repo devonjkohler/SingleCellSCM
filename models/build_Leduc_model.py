@@ -16,7 +16,7 @@ def main():
         "/home/kohler.d/applications_project/single_cell_scm/data/protein_gene_mapping.tsv",
         sep="\t", header=0, names=["Protein", "Gene"])
 
-    model = BuildNetwork(protein_gene_mapping.loc[:5, "Gene"].values)
+    model = BuildNetwork(protein_gene_mapping.loc[:, "Gene"].values)
     model.assemble_genes(reach_server="remote_server")
     model.assemble_pybel()
 

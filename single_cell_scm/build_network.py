@@ -27,33 +27,34 @@ class BuildNetwork:
             bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
 
             ## Get statements from pubmed literature
-            pmids = literature.pubmed_client.get_ids_for_gene('MTA2')
+            ## TODO: Need to get local REACH working
+            # pmids = literature.pubmed_client.get_ids_for_gene('MTA2') ## TODO: Maybe need for loop here
 
             ## Get all lit
-            paper_contents = dict()
-            counter = 0
-            for pmid in pmids:
-                content, content_type = literature.get_full_text(pmid, 'pmid')
-                if content_type == 'abstract':
-                    paper_contents[pmid] = content
-                    counter += 1
-                ## Use to speed up process
-                # if counter == 10:
-                #     break
-
-            ## Extract statements from lit
-            literature_stmts = list()
-            for pmid, content in paper_contents.items():
-                time.sleep(1)
-                if reach_server == "local":
-                    rp = reach.process_text(content, url=reach.local_text_url)
-                elif reach_server == "remote_server":
-                    rp = reach.process_text(content)
-                if rp is not None:
-                    literature_stmts += rp.statements
+            # paper_contents = dict()
+            # counter = 0
+            # for pmid in pmids:
+            #     content, content_type = literature.get_full_text(pmid, 'pmid')
+            #     if content_type == 'abstract':
+            #         paper_contents[pmid] = content
+            #         counter += 1
+            #     ## Use to speed up process
+            #     # if counter == 10:
+            #     #     break
+            #
+            # ## Extract statements from lit
+            # literature_stmts = list()
+            # for pmid, content in paper_contents.items():
+            #     time.sleep(1)
+            #     if reach_server == "local":
+            #         rp = reach.process_text(content, url=reach.local_text_url)
+            #     elif reach_server == "remote_server":
+            #         rp = reach.process_text(content)
+            #     if rp is not None:
+            #         literature_stmts += rp.statements
 
             ## Combine all statements and run pre-assembly
-            stmts = biopax_stmts + bel_stmts + literature_stmts
+            stmts = biopax_stmts + bel_stmts #+ literature_stmts
 
             stmts = ac.map_grounding(stmts)
             stmts = ac.map_sequence(stmts)

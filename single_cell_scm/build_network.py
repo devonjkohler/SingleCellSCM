@@ -17,47 +17,49 @@ class BuildNetwork:
         self.network_statements = None
         self.pybel_model = None
 
-    def assemble_genes(self, reach_server="remote_server"):
+    def assemble_genes(self, search_lit=False, reach_server="remote_server"):
 
         if reach_server in ["local", "remote_server"]:
             ## Collect known statements
-            gn = GeneNetwork(list(self.gene_list))  # , basename="cache"
+            gn = GeneNetwork(list(self.gene_list), basename="cache")  # ,
 
             biopax_stmts = gn.get_biopax_stmts()  ## PathwayCommons DB
             bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
 
+            literature_stmts = list()
             ## Get statements from pubmed literature
             ## TODO: Need to get local REACH working
-            # pmids = literature.pubmed_client.get_ids_for_gene('MTA2') ## TODO: Maybe need for loop here
+            if search_lit:
+                pmids = literature.pubmed_client.get_ids_for_gene('MTA2') ## TODO: Maybe need for loop here
 
-            ## Get all lit
-            # paper_contents = dict()
-            # counter = 0
-            # for pmid in pmids:
-            #     content, content_type = literature.get_full_text(pmid, 'pmid')
-            #     if content_type == 'abstract':
-            #         paper_contents[pmid] = content
-            #         counter += 1
-            #     ## Use to speed up process
-            #     # if counter == 10:
-            #     #     break
-            #
-            # ## Extract statements from lit
-            # literature_stmts = list()
-            # for pmid, content in paper_contents.items():
-            #     time.sleep(1)
-            #     if reach_server == "local":
-            #         rp = reach.process_text(content, url=reach.local_text_url)
-            #     elif reach_server == "remote_server":
-            #         rp = reach.process_text(content)
-            #     if rp is not None:
-            #         literature_stmts += rp.statements
+                # Get all lit
+                paper_contents = dict()
+                counter = 0
+                for pmid in pmids:
+                    content, content_type = literature.get_full_text(pmid, 'pmid')
+                    if content_type == 'abstract':
+                        paper_contents[pmid] = content
+                        counter += 1
+                    ## Use to speed up process
+                    # if counter == 10:
+                    #     break
+
+                ## Extract statements from lit
+                for pmid, content in paper_contents.items():
+                    time.sleep(1)
+                    if reach_server == "local":
+                        rp = reach.process_text(content, url=reach.local_text_url)
+                    elif reach_server == "remote_server":
+                        rp = reach.process_text(content)
+                    if rp is not None:
+                        literature_stmts += rp.statements
 
             ## Combine all statements and run pre-assembly
-            stmts = biopax_stmts + bel_stmts #+ literature_stmts
+            stmts = biopax_stmts + bel_stmts + literature_stmts
 
             stmts = ac.map_grounding(stmts)
-            stmts = ac.map_sequence(stmts)
+            ## Some indra error on ActiveForm statements idk...
+            stmts = ac.map_sequence([x for x in stmts if "ActiveForm" not in str(x)])
             stmts = ac.run_preassembly(stmts)
 
             self.network_statements = stmts
@@ -75,3 +77,7 @@ class BuildNetwork:
 
         else:
             print("No network statements. Please run assemble_genes() function first.")
+
+
+os.environ['ELSEVIER_API_KEY'] = '270acf549bfed5a87046fb9d91b02ead'
+

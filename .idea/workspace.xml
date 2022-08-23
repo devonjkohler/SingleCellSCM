@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="11c9aff1-503d-4bb1-ac36-fac120df9450" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/build_Leduc_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/build_Leduc_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/single_cell_scm/build_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/single_cell_scm/build_network.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -28,6 +27,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../CI_Applications/Indra/indra/indra/tools/assemble_corpus.py" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -42,7 +42,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1661193284537</updated>
-      <workItem from="1661193287513" duration="3974000" />
+      <workItem from="1661193287513" duration="11467000" />
     </task>
     <servers />
   </component>

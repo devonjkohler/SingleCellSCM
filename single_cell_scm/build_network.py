@@ -77,7 +77,3 @@ class BuildNetwork:
 
         else:
             print("No network statements. Please run assemble_genes() function first.")
-
-
-os.environ['ELSEVIER_API_KEY'] = '270acf549bfed5a87046fb9d91b02ead'
-

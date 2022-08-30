@@ -4,7 +4,13 @@ from indra import literature
 from indra.sources import reach
 from indra.tools import assemble_corpus as ac
 from indra.assemblers.pybel.assembler import PybelAssembler
+import pybel_jupyter
+from pybel.struct.mutation.deletion import remove_filtered_nodes, remove_biological_processes, \
+    remove_isolated_list_abundances, remove_non_causal_edges, remove_pathologies
+from pybel.struct.mutation.utils import remove_isolated_nodes
 
+import pandas as pd
+import numpy as np
 import time
 
 class BuildNetwork:
@@ -16,17 +22,21 @@ class BuildNetwork:
         ## Defined later
         self.network_statements = None
         self.pybel_model = None
+        self.pandas_graph = pd.DataFrame()
 
-    def assemble_genes(self, search_lit=False, reach_server="remote_server"):
+    def assemble_genes(self, PathwayCommons=True, BEL=True, search_lit=False, reach_server="remote_server"):
 
         if reach_server in ["local", "remote_server"]:
             ## Collect known statements
             gn = GeneNetwork(list(self.gene_list), basename="cache")  # ,
 
-            biopax_stmts = gn.get_biopax_stmts()  ## PathwayCommons DB
-            bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
+            biopax_stmts, bel_stmts, literature_stmts = list(), list(), list()
 
-            literature_stmts = list()
+            if PathwayCommons:
+                biopax_stmts = gn.get_biopax_stmts()  ## PathwayCommons DB
+            if BEL:
+                bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
+
             ## Get statements from pubmed literature
             ## TODO: Need to get local REACH working
             if search_lit:
@@ -66,7 +76,7 @@ class BuildNetwork:
         else:
             print("reach_server must be one of local or remote_server")
 
-    def assemble_pybel(self):
+    def assemble_pybel(self, save_html=False):
 
         if self.network_statements is not None:
 
@@ -75,5 +85,66 @@ class BuildNetwork:
 
             self.pybel_model = pybel_model
 
+            if save_html:
+                pybel_jupyter.to_html_file(self.pybel_model, "pybel_graph.html")
+
         else:
             print("No network statements. Please run assemble_genes() function first.")
+
+    def assemble_pandas_df(self, filter_edges=True, save_filtered_graph=False, keep_self_cycles=False):
+
+        def clean_pandas_data(df):
+            ## Clean up BEL statements
+            df = df[(~df["From"].str.contains("a\(")) & (~df["To"].str.contains("a\(")) &
+                    (~df["To"].str.contains("var\("))].reset_index(drop=True)
+            df.loc[:, "From"] = df.loc[:, "From"].apply(lambda x: x.split("! ")[1].replace(")", ""))
+            df.loc[:, "To"] = df.loc[:, "To"].apply(lambda x: x.split("! ")[1].replace(")", ""))
+            return df
+
+        def add_proteins(df, protein_df):
+            joined_df = pd.merge(df, protein_df, left_on="From", right_on="Gene", how="left")
+            joined_df.loc[:, "From_Gene"] = joined_df.loc[:, "From"]
+            joined_df.loc[:, "From"] = joined_df.loc[:, "Protein"]
+            joined_df.drop(columns=["Protein", "Gene"], inplace=True)
+            joined_df = pd.merge(joined_df, protein_df, left_on="To", right_on="Gene", how="left")
+            joined_df.loc[:, "To_Gene"] = joined_df.loc[:, "To"]
+            joined_df.loc[:, "To"] = joined_df.loc[:, "Protein"]
+            joined_df.loc[:, "To_latent"] = joined_df.loc[:, "To"].isna()
+            joined_df.loc[:, "From_latent"] = joined_df.loc[:, "From"].isna()
+            joined_df.drop(columns=["Protein", "Gene"], inplace=True)
+            return joined_df
+
+        if self.pybel_model is not None:
+
+            if filter_edges:
+                ## Run filtering functions
+                remove_biological_processes(self.pybel_model)
+                remove_isolated_list_abundances(self.pybel_model)
+                remove_non_causal_edges(self.pybel_model)
+                remove_pathologies(self.pybel_model)
+                remove_isolated_nodes(self.pybel_model)
+
+                if save_filtered_graph:
+                    pybel_jupyter.to_html_file(self.pybel_model, "filtered_pybel_graph.html")
+
+            ## Remove some BEL statement stuff
+            cleaned_edges = [str(x).replace("(<BEL ", "").replace(" <BEL ", "").replace(">", "").split(",")[:2]
+                             for x in self.pybel_model.edges.keys()]
+
+            pd_graph = pd.DataFrame(data=np.array(cleaned_edges), columns=["From", "To"])
+            pd_graph = clean_pandas_data(pd_graph)
+
+            ## Add back in protein names
+            protein_gene_mapping = pd.read_csv("../data/protein_gene_mapping.tsv", sep="\t",
+                                               header=0, names=["Protein", "Gene"])
+            final_graph = add_proteins(pd_graph, protein_gene_mapping)
+            final_graph.drop_duplicates(inplace=True)
+
+            if not keep_self_cycles:
+                final_graph = final_graph[final_graph["From"] != final_graph["To"]]
+
+
+            self.pandas_graph = final_graph
+
+        else:
+            print("Method requires PyBEL graph. Please run assemble_pybel() first.")

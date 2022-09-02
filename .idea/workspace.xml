@@ -4,7 +4,6 @@
     <list default="true" id="c77e1dd2-5d58-43d3-b51c-6cfd6455d332" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/build_Leduc_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/build_Leduc_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/single_cell_scm/build_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/single_cell_scm/build_network.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +36,7 @@
       <option name="presentableId" value="Default" />
       <updated>1662042419417</updated>
       <workItem from="1662042422335" duration="5319000" />
-      <workItem from="1662136964656" duration="1573000" />
+      <workItem from="1662136964656" duration="2509000" />
     </task>
     <servers />
   </component>

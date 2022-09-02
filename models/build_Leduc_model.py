@@ -11,7 +11,7 @@ def learn_network(mapping):
     genes = mapping.loc[:, "Gene"].values
     genes = np.append(genes, ["BRAF", "NRAS"])
     model = BuildNetwork(genes)
-    model.assemble_genes(BEL=False, reach_server="remote_server")
+    model.assemble_genes()
     model.assemble_pybel()
     model.assemble_pandas_df(mapping)
     return model

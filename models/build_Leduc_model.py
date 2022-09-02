@@ -3,11 +3,14 @@ from single_cell_scm.build_network import BuildNetwork
 import pickle
 import os
 import pandas as pd
+import numpy as np
 
 os.environ['ELSEVIER_API_KEY'] = '270acf549bfed5a87046fb9d91b02ead'
 
 def learn_network(mapping):
-    model = BuildNetwork(mapping.loc[:, "Gene"].values)
+    genes = mapping.loc[:, "Gene"].values
+    genes = np.append(genes, ["BRAF", "NRAS"])
+    model = BuildNetwork(genes)
     model.assemble_genes(BEL=False, reach_server="remote_server")
     model.assemble_pybel()
     model.assemble_pandas_df(mapping)

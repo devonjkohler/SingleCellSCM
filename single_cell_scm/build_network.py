@@ -33,7 +33,7 @@ class BuildNetwork:
             biopax_stmts, bel_stmts, literature_stmts = list(), list(), list()
 
             if PathwayCommons:
-                biopax_stmts = gn.get_biopax_stmts(query='neighborhood')  ## PathwayCommons DB
+                biopax_stmts = gn.get_biopax_stmts()  ## PathwayCommons DB
             if BEL:
                 bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
 

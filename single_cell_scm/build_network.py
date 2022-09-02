@@ -33,7 +33,7 @@ class BuildNetwork:
             biopax_stmts, bel_stmts, literature_stmts = list(), list(), list()
 
             if PathwayCommons:
-                biopax_stmts = gn.get_biopax_stmts()  ## PathwayCommons DB
+                biopax_stmts = gn.get_biopax_stmts(query='neighborhood')  ## PathwayCommons DB
             if BEL:
                 bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
 
@@ -91,7 +91,7 @@ class BuildNetwork:
         else:
             print("No network statements. Please run assemble_genes() function first.")
 
-    def assemble_pandas_df(self, filter_edges=True, save_filtered_graph=False, keep_self_cycles=False):
+    def assemble_pandas_df(self, protein_gene_mapping, filter_edges=True, save_filtered_graph=False, keep_self_cycles=False):
 
         def clean_pandas_data(df):
             ## Clean up BEL statements
@@ -135,14 +135,17 @@ class BuildNetwork:
             pd_graph = clean_pandas_data(pd_graph)
 
             ## Add back in protein names
-            protein_gene_mapping = pd.read_csv("../data/protein_gene_mapping.tsv", sep="\t",
-                                               header=0, names=["Protein", "Gene"])
             final_graph = add_proteins(pd_graph, protein_gene_mapping)
             final_graph.drop_duplicates(inplace=True)
 
             if not keep_self_cycles:
                 final_graph = final_graph[final_graph["From"] != final_graph["To"]]
 
+            ## Add gene into protein name and where missing
+            final_graph.loc[:, "From"] = np.where(final_graph.loc[:, "From"].isna(), final_graph.loc[:, "From_Gene"],
+                                                  final_graph.loc[:, "From"] + "_" + final_graph.loc[:, "From_Gene"])
+            final_graph.loc[:, "To"] = np.where(final_graph.loc[:, "To"].isna(), final_graph.loc[:, "To_Gene"],
+                                                final_graph.loc[:, "To"] + "_" + final_graph.loc[:, "To_Gene"])
 
             self.pandas_graph = final_graph
 

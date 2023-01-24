@@ -24,7 +24,8 @@ class BuildNetwork:
         self.pybel_model = None
         self.pandas_graph = pd.DataFrame()
 
-    def assemble_genes(self, PathwayCommons=True, BEL=True, search_lit=False, reach_server="remote_server"):
+    def assemble_genes(self, PathwayCommons=True, Pathway_query = "pathsbetween",
+                       BEL=True, search_lit=False, reach_server="remote_server"):
 
         if reach_server in ["local", "remote_server"]:
             ## Collect known statements
@@ -33,7 +34,7 @@ class BuildNetwork:
             biopax_stmts, bel_stmts, literature_stmts = list(), list(), list()
 
             if PathwayCommons:
-                biopax_stmts = gn.get_biopax_stmts()  ## PathwayCommons DB
+                biopax_stmts = gn.get_biopax_stmts(query=Pathway_query)  ## PathwayCommons DB
             if BEL:
                 bel_stmts = gn.get_bel_stmts()  ## BEL Large Corpus
 
@@ -74,7 +75,7 @@ class BuildNetwork:
 
             self.network_statements = stmts
         else:
-            print("reach_server must be one of local or remote_server")
+            raise ValueError("reach_server must be one of local or remote_server")
 
     def assemble_pybel(self, save_html=False):
 
@@ -89,7 +90,7 @@ class BuildNetwork:
                 pybel_jupyter.to_html_file(self.pybel_model, "pybel_graph.html")
 
         else:
-            print("No network statements. Please run assemble_genes() function first.")
+            raise ValueError("No network statements. Please run assemble_genes() function first.")
 
     def assemble_pandas_df(self, protein_gene_mapping, filter_edges=True, save_filtered_graph=False, keep_self_cycles=False):
 
@@ -150,4 +151,4 @@ class BuildNetwork:
             self.pandas_graph = final_graph
 
         else:
-            print("Method requires PyBEL graph. Please run assemble_pybel() first.")
+            raise RuntimeError("Method requires PyBEL graph. Please run assemble_pybel() first.")

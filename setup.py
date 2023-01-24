@@ -14,7 +14,7 @@ here = pathlib.Path(__file__).parent.resolve()
 setup(
 
     name="single_cell_scm",  # Required
-    version="0.0.1",  # Required
+    version="0.0.2",  # Required
 
     description="Fit an SCM to single cell proteomics data",
     # long_description=long_description,  # Optional
@@ -56,7 +56,7 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/discussions/install-requires-vs-requirements/
     install_requires=["indra", "pandas", "numpy", "pybel", "pybel_jupyter",
-                      "torch", "pyro-ppl"],  # Optional
+                      "torch", "pyro-ppl", "matplotlib", "y0", "networkx"],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:

@@ -56,7 +56,8 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/discussions/install-requires-vs-requirements/
     install_requires=["indra", "pandas", "numpy", "pybel", "pybel_jupyter",
-                      "torch", "pyro-ppl", "matplotlib", "y0", "networkx"],  # Optional
+                      "torch", "pyro-ppl", "matplotlib", "y0", "networkx",
+                      "dowhy", "scipy"],
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
